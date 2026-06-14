@@ -28,4 +28,9 @@ public interface SongRepository extends JpaRepository<Song, Long> {
     List<Song> findLatestSongs(Pageable pageable);
 
     List<Song> findByStatusAndActiveTrue(Song.SongStatus status);
+
+    long countByStatus(Song.SongStatus status);
+
+    @Query("SELECT COALESCE(SUM(s.playCount), 0) FROM Song s")
+    Long getTotalPlays();
 }
