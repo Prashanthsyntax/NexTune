@@ -44,3 +44,9 @@ NexTune/
 │
 └── README.md
 ```
+
+To Run the Backend
+
+```bash
+./mvnw spring-boot:run
+```
