@@ -26,6 +26,8 @@ public class Artist {
     private String bio;
     private String profileImage;
     private String coverImage;
+    
+    @Builder.Default
     private Long followers = 0L;
     private boolean verified = false;
 

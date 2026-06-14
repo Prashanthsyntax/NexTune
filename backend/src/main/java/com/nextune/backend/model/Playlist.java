@@ -22,6 +22,8 @@ public class Playlist {
 
     private String description;
     private String coverImage;
+    
+    @Builder.Default
     private boolean isPublic = true;
 
     @ManyToOne
@@ -29,11 +31,8 @@ public class Playlist {
     private User user;
 
     @ManyToMany
-    @JoinTable(
-        name = "playlist_songs",
-        joinColumns = @JoinColumn(name = "playlist_id"),
-        inverseJoinColumns = @JoinColumn(name = "song_id")
-    )
+    @JoinTable(name = "playlist_songs", joinColumns = @JoinColumn(name = "playlist_id"), inverseJoinColumns = @JoinColumn(name = "song_id"))
+    @Builder.Default
     private List<Song> songs = new ArrayList<>();
 
     @Column(updatable = false)

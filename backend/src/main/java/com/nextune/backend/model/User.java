@@ -34,6 +34,8 @@ public class User {
     private Role role = Role.LISTENER;
 
     private boolean premium = false;
+    
+    @Builder.Default
     private boolean active = true;
     private boolean emailVerified = false;
 

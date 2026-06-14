@@ -36,12 +36,21 @@ public class Song {
 
     private String coverImage;
     private Integer duration;
+
+    @Builder.Default
     private Long playCount = 0L;
+
+    @Builder.Default
     private Long likeCount = 0L;
+
+    @Builder.Default
     private boolean premium = false;
+
+    @Builder.Default
     private boolean active = true;
 
     @Enumerated(EnumType.STRING)
+    @Builder.Default
     private SongStatus status = SongStatus.PENDING;
 
     @Column(updatable = false)
