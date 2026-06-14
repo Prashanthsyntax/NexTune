@@ -50,3 +50,12 @@ To Run the Backend
 ```bash
 ./mvnw spring-boot:run
 ```
+
+This completes the entire Spring Boot backend! 🎉 Here's what we've built so far:
+
+✅ JWT Authentication (register/login)
+✅ Artist profiles, Albums, Songs (with file upload)
+✅ Playlists (create/edit/delete/add/remove songs)
+✅ Likes, Follows, Listening History
+✅ Genre management
+✅ Admin panel (users, song approval, platform stats)
