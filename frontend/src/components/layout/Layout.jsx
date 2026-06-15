@@ -1,5 +1,6 @@
 import { Outlet, Link } from 'react-router-dom';
 import useAuthStore from '../../store/authStore';
+import Player from '../player/Player';
 
 function Layout() {
   const { user, logout } = useAuthStore();
@@ -56,10 +57,7 @@ function Layout() {
         </main>
       </div>
 
-      {/* Player bar placeholder */}
-      <footer className="h-20 bg-neutral-900 border-t border-neutral-800 flex items-center px-4">
-        <span className="text-neutral-500 text-sm">Player bar (Step 10)</span>
-      </footer>
+      <Player />
     </div>
   );
 }
