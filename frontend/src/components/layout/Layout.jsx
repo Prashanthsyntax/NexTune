@@ -15,6 +15,7 @@ function Layout() {
           <nav className="flex flex-col gap-2 mt-4">
             <Link to="/" className="hover:text-green-400">Home</Link>
             <Link to="/search" className="hover:text-green-400">Search</Link>
+            <Link to="/library" className="hover:text-green-400">Library</Link>
             <Link to="/profile" className="hover:text-green-400">Profile</Link>
 
             {user?.role === 'ARTIST' && (
