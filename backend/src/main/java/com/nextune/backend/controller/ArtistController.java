@@ -20,7 +20,7 @@ public class ArtistController {
     private final UserRepository userRepository;
 
     @PostMapping(consumes = "multipart/form-data")
-    public ResponseEntity<ApiResponse<ArtistResponse>> createProfile(
+    public ResponseEntity<ApiResponse<ArtistProfileResponse>> createProfile(
             @AuthenticationPrincipal UserDetails userDetails,
             @RequestParam String artistName,
             @RequestParam(required = false) String bio,
@@ -28,9 +28,17 @@ public class ArtistController {
             @RequestParam(required = false) MultipartFile coverImage) {
 
         Long userId = getUserId(userDetails);
-        ArtistResponse response = artistService.createArtistProfile(
+        ArtistProfileResponse response = artistService.createArtistProfile(
             userId, artistName, bio, profileImage, coverImage);
         return ResponseEntity.ok(ApiResponse.success("Artist profile created", response));
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<ApiResponse<ArtistResponse>> getMyArtistProfile(
+            @AuthenticationPrincipal UserDetails userDetails) {
+        Long userId = getUserId(userDetails);
+        return ResponseEntity.ok(
+            ApiResponse.success("Artist profile found", artistService.getArtistByUserId(userId)));
     }
 
     @GetMapping("/{id}")

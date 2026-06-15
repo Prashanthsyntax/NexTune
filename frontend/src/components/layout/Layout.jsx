@@ -1,6 +1,6 @@
-import { Outlet, Link } from 'react-router-dom';
-import useAuthStore from '../../store/authStore';
-import Player from '../player/Player';
+import { Outlet, Link } from "react-router-dom";
+import useAuthStore from "../../store/authStore";
+import Player from "../player/Player";
 
 function Layout() {
   const { user, logout } = useAuthStore();
@@ -13,18 +13,29 @@ function Layout() {
           <h1 className="text-2xl font-bold text-green-500">NexTune</h1>
 
           <nav className="flex flex-col gap-2 mt-4">
-            <Link to="/" className="hover:text-green-400">Home</Link>
-            <Link to="/search" className="hover:text-green-400">Search</Link>
-            <Link to="/library" className="hover:text-green-400">Library</Link>
-            <Link to="/profile" className="hover:text-green-400">Profile</Link>
+            <Link to="/" className="hover:text-green-400">
+              Home
+            </Link>
+            <Link to="/search" className="hover:text-green-400">
+              Search
+            </Link>
+            <Link to="/library" className="hover:text-green-400">
+              Library
+            </Link>
+            <Link to="/profile" className="hover:text-green-400">
+              Profile
+            </Link>
 
-            {user?.role === 'ARTIST' && (
+
+            {user && (
               <Link to="/artist/dashboard" className="hover:text-green-400">
-                Artist Dashboard
+                {user.role === "ARTIST" || user.role === "ADMIN"
+                  ? "Artist Dashboard"
+                  : "Become an Artist"}
               </Link>
             )}
 
-            {user?.role === 'ADMIN' && (
+            {user?.role === "ADMIN" && (
               <Link to="/admin" className="hover:text-green-400">
                 Admin Panel
               </Link>

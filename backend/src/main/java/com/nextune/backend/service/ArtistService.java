@@ -3,6 +3,7 @@ package com.nextune.backend.service;
 import com.nextune.backend.dto.*;
 import com.nextune.backend.model.*;
 import com.nextune.backend.repository.*;
+import com.nextune.backend.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,8 +18,9 @@ public class ArtistService {
     private final ArtistRepository artistRepository;
     private final UserRepository userRepository;
     private final FileStorageService fileStorageService;
+    private final JwtUtil jwtUtil;
 
-    public ArtistResponse createArtistProfile(Long userId, String artistName,
+    public ArtistProfileResponse createArtistProfile(Long userId, String artistName,
                                                String bio, MultipartFile profileImage,
                                                MultipartFile coverImage) {
         if (artistRepository.existsByUserId(userId)) {
@@ -47,7 +49,14 @@ public class ArtistService {
             artist.setCoverImage(fileStorageService.storeFile(coverImage, "artists/cover"));
         }
 
-        return mapToResponse(artistRepository.save(artist));
+        Artist saved = artistRepository.save(artist);
+
+        String newToken = jwtUtil.generateToken(user.getEmail(), user.getRole().name());
+
+        return ArtistProfileResponse.builder()
+                .artist(mapToResponse(saved))
+                .token(newToken)
+                .build();
     }
 
     public ArtistResponse getArtistById(Long id) {

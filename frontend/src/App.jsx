@@ -9,7 +9,7 @@ import Register from "./pages/auth/Register";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import Search from "./pages/search/Search";
 import PlaylistDetail from "./pages/playlist/PlaylistDetail";
-import ArtistDashboard from "./pages/artist/ArtistDashboard";
+import ArtistDashboard from "./components/artist/ArtistDashboard";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import Profile from "./pages/profile/Profile";
 import Library from "./pages/library/Library";
@@ -46,7 +46,7 @@ function App() {
           <Route
             path="/artist/dashboard"
             element={
-              <ProtectedRoute allowedRoles={["ARTIST", "ADMIN"]}>
+              <ProtectedRoute>
                 <ArtistDashboard />
               </ProtectedRoute>
             }
