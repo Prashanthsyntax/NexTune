@@ -10,7 +10,7 @@ import ForgotPassword from "./pages/auth/ForgotPassword";
 import Search from "./pages/search/Search";
 import PlaylistDetail from "./pages/playlist/PlaylistDetail";
 import ArtistDashboard from "./components/artist/ArtistDashboard";
-import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminDashboard from "./components/admin/AdminDashboard";
 import Profile from "./pages/profile/Profile";
 import Library from "./pages/library/Library";
 import LikedSongs from "./pages/playlist/LikedSongs";

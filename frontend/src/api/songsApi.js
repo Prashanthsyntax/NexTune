@@ -13,3 +13,6 @@ export const uploadSong = (formData) =>
 export const getSongsByArtist = (artistId) => api.get(`/songs/artist/${artistId}`);
 
 export const deleteSong = (id) => api.delete(`/songs/${id}`);
+
+export const approveSong = (id) => api.put(`/songs/${id}/approve`);
+export const rejectSong = (id) => api.put(`/songs/${id}/reject`);
