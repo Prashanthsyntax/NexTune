@@ -16,3 +16,5 @@ export const deleteSong = (id) => api.delete(`/songs/${id}`);
 
 export const approveSong = (id) => api.put(`/songs/${id}/approve`);
 export const rejectSong = (id) => api.put(`/songs/${id}/reject`);
+
+export const downloadSong = (id) => api.get(`/songs/${id}/download`, { responseType: 'blob' });

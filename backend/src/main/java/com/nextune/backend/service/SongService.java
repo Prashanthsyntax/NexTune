@@ -7,6 +7,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,11 +28,12 @@ public class SongService {
     private final AlbumRepository albumRepository;
     private final GenreRepository genreRepository;
     private final FileStorageService fileStorageService;
+    private final UserRepository userRepository;
 
     public SongResponse uploadSong(Long userId, String title, Long albumId,
-                                    Long genreId, boolean premium,
-                                    MultipartFile audioFile,
-                                    MultipartFile coverImage) {
+            Long genreId, boolean premium,
+            MultipartFile audioFile,
+            MultipartFile coverImage) {
         Artist artist = artistRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("Artist profile not found"));
 
@@ -118,6 +127,36 @@ public class SongService {
         fileStorageService.deleteFile(song.getAudioUrl());
         fileStorageService.deleteFile(song.getCoverImage());
         songRepository.delete(song);
+    }
+
+    public ResponseEntity<Resource> downloadSong(Long songId, String email) throws IOException {
+        Song song = songRepository.findById(songId)
+                .orElseThrow(() -> new RuntimeException("Song not found"));
+
+        if (song.isPremium()) {
+            User user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+            if (!user.isPremium()) {
+                throw new RuntimeException("Premium subscription required to download this song");
+            }
+        }
+
+        String relativePath = song.getAudioUrl().startsWith("/")
+                ? song.getAudioUrl().substring(1)
+                : song.getAudioUrl();
+        Path filePath = Paths.get(relativePath);
+        Resource resource = new UrlResource(filePath.toUri());
+
+        if (!resource.exists()) {
+            throw new RuntimeException("Audio file not found");
+        }
+
+        String filename = song.getTitle().replaceAll("[^a-zA-Z0-9]", "_") + ".mp3";
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
+                .body(resource);
     }
 
     public SongResponse mapToResponse(Song song) {

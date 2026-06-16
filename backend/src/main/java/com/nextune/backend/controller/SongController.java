@@ -10,6 +10,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.core.io.Resource;
+import java.io.IOException;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
@@ -34,7 +36,7 @@ public class SongController {
 
         Long userId = getUserId(userDetails);
         SongResponse response = songService.uploadSong(
-            userId, title, albumId, genreId, premium, audioFile, coverImage);
+                userId, title, albumId, genreId, premium, audioFile, coverImage);
         return ResponseEntity.ok(ApiResponse.success("Song uploaded successfully", response));
     }
 
@@ -42,14 +44,14 @@ public class SongController {
     public ResponseEntity<ApiResponse<List<SongResponse>>> getTopSongs(
             @RequestParam(defaultValue = "10") int limit) {
         return ResponseEntity.ok(
-            ApiResponse.success("Top songs", songService.getTopSongs(limit)));
+                ApiResponse.success("Top songs", songService.getTopSongs(limit)));
     }
 
     @GetMapping("/public/latest")
     public ResponseEntity<ApiResponse<List<SongResponse>>> getLatestSongs(
             @RequestParam(defaultValue = "10") int limit) {
         return ResponseEntity.ok(
-            ApiResponse.success("Latest songs", songService.getLatestSongs(limit)));
+                ApiResponse.success("Latest songs", songService.getLatestSongs(limit)));
     }
 
     @GetMapping("/public/search")
@@ -58,20 +60,20 @@ public class SongController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         return ResponseEntity.ok(
-            ApiResponse.success("Search results", songService.searchSongs(query, page, size)));
+                ApiResponse.success("Search results", songService.searchSongs(query, page, size)));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<SongResponse>> getSong(@PathVariable Long id) {
         return ResponseEntity.ok(
-            ApiResponse.success("Song found", songService.getSongById(id)));
+                ApiResponse.success("Song found", songService.getSongById(id)));
     }
 
     @GetMapping("/artist/{artistId}")
     public ResponseEntity<ApiResponse<List<SongResponse>>> getSongsByArtist(
             @PathVariable Long artistId) {
         return ResponseEntity.ok(
-            ApiResponse.success("Songs by artist", songService.getSongsByArtist(artistId)));
+                ApiResponse.success("Songs by artist", songService.getSongsByArtist(artistId)));
     }
 
     @PostMapping("/{id}/play")
@@ -84,14 +86,14 @@ public class SongController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<SongResponse>> approveSong(@PathVariable Long id) {
         return ResponseEntity.ok(
-            ApiResponse.success("Song approved", songService.approveSong(id)));
+                ApiResponse.success("Song approved", songService.approveSong(id)));
     }
 
     @PutMapping("/{id}/reject")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<SongResponse>> rejectSong(@PathVariable Long id) {
         return ResponseEntity.ok(
-            ApiResponse.success("Song rejected", songService.rejectSong(id)));
+                ApiResponse.success("Song rejected", songService.rejectSong(id)));
     }
 
     @DeleteMapping("/{id}")
@@ -99,6 +101,13 @@ public class SongController {
     public ResponseEntity<ApiResponse<Void>> deleteSong(@PathVariable Long id) {
         songService.deleteSong(id);
         return ResponseEntity.ok(ApiResponse.success("Song deleted", null));
+    }
+
+    @GetMapping("/{id}/download")
+    public ResponseEntity<Resource> downloadSong(
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserDetails userDetails) throws IOException {
+        return songService.downloadSong(id, userDetails.getUsername());
     }
 
     private Long getUserId(UserDetails userDetails) {
