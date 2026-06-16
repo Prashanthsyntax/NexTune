@@ -1,6 +1,64 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { getTopSongs, getLatestSongs } from '../../api/songsApi';
 import SongCard from '../../components/player/SongCard';
+
+function ScrollRow({ songs }) {
+  const ref = useRef(null);
+  let isDown = false;
+  let startX;
+  let scrollLeft;
+
+  const onMouseDown = (e) => {
+    // eslint-disable-next-line react-hooks/immutability
+    isDown = true;
+    ref.current.style.cursor = 'grabbing';
+    startX = e.pageX - ref.current.offsetLeft;
+    scrollLeft = ref.current.scrollLeft;
+  };
+
+  const onMouseLeave = () => {
+    isDown = false;
+    ref.current.style.cursor = 'grab';
+  };
+
+  const onMouseUp = () => {
+    isDown = false;
+    ref.current.style.cursor = 'grab';
+  };
+
+  const onMouseMove = (e) => {
+    if (!isDown) return;
+    e.preventDefault();
+    const x = e.pageX - ref.current.offsetLeft;
+    const walk = (x - startX) * 1.5;
+    ref.current.scrollLeft = scrollLeft - walk;
+  };
+
+  return (
+    <div
+      ref={ref}
+      // eslint-disable-next-line react-hooks/immutability
+      onMouseDown={onMouseDown}
+      // eslint-disable-next-line react-hooks/immutability
+      onMouseLeave={onMouseLeave}
+      // eslint-disable-next-line react-hooks/immutability
+      onMouseUp={onMouseUp}
+      onMouseMove={onMouseMove}
+      className="flex gap-4 select-none"
+      style={{
+        overflowX: 'scroll',
+        scrollbarWidth: 'none',
+        msOverflowStyle: 'none',
+        cursor: 'grab',
+      }}
+    >
+      <style>{`div::-webkit-scrollbar { display: none; }`}</style>
+      {songs.map((song) => (
+        <SongCard key={song.id} song={song} queue={songs} />
+      ))}
+    </div>
+  );
+}
 
 function Home() {
   const [topSongs, setTopSongs] = useState([]);
@@ -39,11 +97,7 @@ function Home() {
             No songs available yet. Upload and approve a song to see it here.
           </p>
         ) : (
-          <div className="flex gap-4 overflow-x-auto pb-2">
-            {latestSongs.map((song) => (
-              <SongCard key={song.id} song={song} queue={latestSongs} />
-            ))}
-          </div>
+          <ScrollRow songs={latestSongs} />
         )}
       </section>
 
@@ -52,11 +106,7 @@ function Home() {
         {topSongs.length === 0 ? (
           <p className="text-neutral-500 text-sm">No songs available yet.</p>
         ) : (
-          <div className="flex gap-4 overflow-x-auto pb-2">
-            {topSongs.map((song) => (
-              <SongCard key={song.id} song={song} queue={topSongs} />
-            ))}
-          </div>
+          <ScrollRow songs={topSongs} />
         )}
       </section>
     </div>
